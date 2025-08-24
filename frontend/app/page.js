@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default function Home() {
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +26,7 @@ export default function Home() {
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:5000/plants?search=${search}&category=${category.toLowerCase()}`
+        `${API}/plants?search=${search}&category=${category.toLowerCase()}`
       );
       setPlants(res.data);
       setError(null);
@@ -68,7 +70,7 @@ export default function Home() {
           <div key={plant._id} className="border p-4 rounded shadow hover:shadow-lg transition">
             {plant.imageUrl && (
               <img
-                src={`http://localhost:5000/${plant.imageUrl}`}
+                src={`${API}${plant.imageUrl}`}  
                 alt={plant.name}
                 className="w-full h-48 object-cover mb-2 rounded"
               />

@@ -1,6 +1,4 @@
 // backend/index.js
-// CommonJS (no ESM warning). Run with: node index.js
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -13,14 +11,10 @@ dotenv.config();
 
 const app = express();
 
-// ---------- CORS (dev-friendly) ----------
+// ---------- CORS ----------
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      // add your LAN IP if you open from phone/another PC, e.g.
-      "http://10.13.0.137:3000",
-    ],
+    origin: ["http://localhost:3000"], // add frontend URL when deployed
     credentials: false,
   })
 );
@@ -46,14 +40,14 @@ const plantSchema = new mongoose.Schema(
     price: { type: Number, required: true, min: 0 },
     categories: { type: [String], default: [] },
     availability: { type: Boolean, default: true },
-    imageUrl: { type: String }, // stored as "uploads/<filename>"
+    imageUrl: { type: String }, // stored as "/uploads/<filename>"
   },
   { timestamps: true }
 );
 
 const Plant = mongoose.model("Plant", plantSchema);
 
-// ---------- Multer Storage (disk) ----------
+// ---------- Multer Storage ----------
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
@@ -68,7 +62,7 @@ const upload = multer({
 
 // ---------- Routes ----------
 
-// GET /plants  (with search & category filter)
+// GET /plants
 app.get("/plants", async (req, res) => {
   try {
     const { search = "", category = "" } = req.query;
@@ -86,14 +80,23 @@ app.get("/plants", async (req, res) => {
     }
 
     const plants = await Plant.find(query).sort({ createdAt: -1 });
-    res.json(plants);
+
+    // 🔥 Fix for OLD records (without `/`)
+    const fixedPlants = plants.map((p) => {
+      if (p.imageUrl && !p.imageUrl.startsWith("/")) {
+        p.imageUrl = `/${p.imageUrl}`;
+      }
+      return p;
+    });
+
+    res.json(fixedPlants);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-// POST /plants  (multipart: image + fields)
+// POST /plants
 app.post("/plants", upload.single("image"), async (req, res) => {
   try {
     const { name, price, categories = "", availability } = req.body;
@@ -112,7 +115,7 @@ app.post("/plants", upload.single("image"), async (req, res) => {
       price: Number(price),
       categories: catArray,
       availability: availability === "true" || availability === true,
-      imageUrl: req.file ? `uploads/${req.file.filename}` : undefined,
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : undefined, // ✅ fixed
     });
 
     await doc.save();
@@ -123,7 +126,7 @@ app.post("/plants", upload.single("image"), async (req, res) => {
   }
 });
 
-// PUT /plants/:id  (multipart: optional new image)
+// PUT /plants/:id
 app.put("/plants/:id", upload.single("image"), async (req, res) => {
   try {
     const { name, price, categories = "", availability } = req.body;
@@ -141,14 +144,13 @@ app.put("/plants/:id", upload.single("image"), async (req, res) => {
       update.availability = availability === "true" || availability === true;
     }
     if (req.file) {
-      update.imageUrl = `uploads/${req.file.filename}`;
+      update.imageUrl = `/uploads/${req.file.filename}`;
     }
 
-    // If new image uploaded, optionally delete old image from disk
     if (req.file) {
       const prev = await Plant.findById(req.params.id);
       if (prev?.imageUrl) {
-        const oldPath = path.join(__dirname, prev.imageUrl);
+        const oldPath = path.join(__dirname, prev.imageUrl.replace(/^\//, ""));
         fs.existsSync(oldPath) && fs.unlink(oldPath, () => {});
       }
     }
@@ -165,14 +167,14 @@ app.put("/plants/:id", upload.single("image"), async (req, res) => {
   }
 });
 
-// DELETE /plants/:id  (also remove image from disk)
+// DELETE /plants/:id
 app.delete("/plants/:id", async (req, res) => {
   try {
     const doc = await Plant.findByIdAndDelete(req.params.id);
     if (!doc) return res.status(404).json({ error: "Plant not found" });
 
     if (doc.imageUrl) {
-      const f = path.join(__dirname, doc.imageUrl);
+      const f = path.join(__dirname, doc.imageUrl.replace(/^\//, ""));
       fs.existsSync(f) && fs.unlink(f, () => {});
     }
 
@@ -185,4 +187,4 @@ app.delete("/plants/:id", async (req, res) => {
 
 // ---------- Start server ----------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
