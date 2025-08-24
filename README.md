@@ -1,13 +1,13 @@
-Mini Plant Store
+# Mini Plant Store
 
 A full-stack web application for browsing and managing a plant catalog.  
 Built as part of the Urvann Software Development Intern Assignment.
 
 ---
 
-Features
+## Features
 
-Customer (Home Page `/`)
+### Customer (Home Page `/`)
 - Browse plants in a clean responsive grid
 - Search by plant name or category
 - Filter plants by category
@@ -17,7 +17,7 @@ Customer (Home Page `/`)
   - Availability
   - Image
 
-Admin (Dashboard `/admin`)
+### Admin (Dashboard `/admin`)
 - Add new plants with:
   - Name, Price, Categories, Availability
   - Upload image from PC with preview
@@ -28,7 +28,7 @@ Admin (Dashboard `/admin`)
   - Available vs Unavailable
   - Category counts
 
-Backend (Node.js + Express + MongoDB)
+### Backend (Node.js + Express + MongoDB)
 - REST API for CRUD operations
 - Multer setup for image uploads
 - MongoDB schema with validation
@@ -36,18 +36,18 @@ Backend (Node.js + Express + MongoDB)
 
 ---
 
-Tech Stack
+## Tech Stack
 
-Frontend: Next.js (React), TailwindCSS, Axios
-Backend: Node.js, Express.js, Multer, Mongoose
-Database: MongoDB (local or Atlas)
-Deployment: (Optional) Vercel (frontend) + Render/Railway (backend)
+- **Frontend**: Next.js (React), TailwindCSS, Axios  
+- **Backend**: Node.js, Express.js, Multer, Mongoose  
+- **Database**: MongoDB (local or Atlas)  
+- **Deployment**: (Optional) Vercel (frontend) + Render/Railway (backend)
 
 ---
 
-Installation & Setup
+## Installation & Setup
 
-Prerequisites
+### Prerequisites
 - Node.js (v16 or later)
 - npm (comes with Node.js)
 - MongoDB (local instance or Atlas cluster)
@@ -55,35 +55,39 @@ Prerequisites
 
 ---
 
-Backend Setup
+### Backend Setup
 
+```bash
 cd backend
 npm install
+```
 
-Create a .env file inside backend/:
+Create a `.env` file inside `backend/`:
 
+```
 MONGO_URI=your_mongodb_connection_string
 PORT=5000
+```
 
 Start the server:
+
+```bash
 node index.js
+```
 
-Frontend Setup
+---
 
+### Frontend Setup
+
+```bash
 cd frontend
 npm install
-
-Start the development server:
 npm run dev
+```
 
 ---
 
-Screenshots
-![Customer Page](<img width="1919" height="1074" alt="Screenshot" src="https://github.com/user-attachments/assets/d458b70e-768c-4d14-bb75-f1b2d5e14c09" />)
-![Admin Page](<img width="1919" height="1090" alt="Screenshot admin" src="https://github.com/user-attachments/assets/a716df38-7799-49d9-a943-ef805df93fda" />)
+## Submission
 
----
-
-Submission
-- GitHub Repo: [Insert Link]
-- Deployed Link: [Insert Link After Deployment]
+- **GitHub Repo**: [Insert Link]  
+- **Deployed Link**: [Insert Link After Deployment]
