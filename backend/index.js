@@ -12,13 +12,12 @@ dotenv.config();
 const app = express();
 
 // ---------- CORS ----------
-const FRONTEND_URL = "https://urvann-assignment-ui8k.vercel.app"; // Deployed frontend URL
-
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // allow Postman or server-to-server requests
-      if (origin === "http://localhost:3000" || origin === FRONTEND_URL) {
+      // Allow localhost and any Vercel deployed frontend
+      if (origin === "http://localhost:3000" || origin.endsWith(".vercel.app")) {
         return callback(null, true);
       }
       return callback(new Error("Not allowed by CORS"));
