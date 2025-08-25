@@ -12,22 +12,21 @@ dotenv.config();
 const app = express();
 
 // ---------- CORS ----------
-// Update this array with your actual Vercel frontend URL
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://urvann-assignment.vercel.app" // <-- replace with your deployed frontend URL
-];
+// Replace this with your deployed frontend URL from Vercel
+const FRONTEND_URL = "https://urvann-assignment-ui8k.vercel.app";
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // allow requests with no origin (e.g., Postman, server-to-server)
+      // Allow requests with no origin (e.g., Postman, server-to-server)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (origin === "http://localhost:3000" || origin === FRONTEND_URL) {
+        return callback(null, true);
+      }
       return callback(new Error("Not allowed by CORS"));
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
+    credentials: true,
   })
 );
 
@@ -65,7 +64,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const safe = file.originalname.replace(/\s+/g, "_");
     cb(null, `${Date.now()}_${safe}`);
-  }
+  },
 });
 const upload = multer({
   storage,
