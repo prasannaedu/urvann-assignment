@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+// Use the correct environment variable
 const API = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
 
 export default function Admin() {
   const [plants, setPlants] = useState([]);
