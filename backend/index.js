@@ -38,8 +38,8 @@ app.use("/uploads", express.static(UPLOAD_DIR)); // serve images
 // ---------- Mongo Connection ----------
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB Error:", err));
+  .then(() => console.log(" MongoDB connected"))
+  .catch((err) => console.error(" MongoDB Error:", err));
 
 // ---------- Mongoose Model ----------
 const plantSchema = new mongoose.Schema(
@@ -191,4 +191,4 @@ app.delete("/plants/:id", async (req, res) => {
 
 // ---------- Start server ----------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
