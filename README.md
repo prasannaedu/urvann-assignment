@@ -1,13 +1,13 @@
-# Mini Plant Store
+Mini Plant Store
 
 A full-stack web application for browsing and managing a plant catalog.  
 Built as part of the Urvann Software Development Intern Assignment.
 
 ---
 
-## Features
+Features
 
-### Customer (Home Page `/`)
+Customer (Home Page `/`)
 - Browse plants in a clean responsive grid
 - Search by plant name or category
 - Filter plants by category
@@ -17,7 +17,7 @@ Built as part of the Urvann Software Development Intern Assignment.
   - Availability
   - Image
 
-### Admin (Dashboard `/admin`)
+Admin (Dashboard `/admin`)
 - Add new plants with:
   - Name, Price, Categories, Availability
   - Upload image from PC with preview
@@ -28,7 +28,7 @@ Built as part of the Urvann Software Development Intern Assignment.
   - Available vs Unavailable
   - Category counts
 
-### Backend (Node.js + Express + MongoDB)
+Backend (Node.js + Express + MongoDB)
 - REST API for CRUD operations
 - Multer setup for image uploads
 - MongoDB schema with validation
@@ -36,18 +36,18 @@ Built as part of the Urvann Software Development Intern Assignment.
 
 ---
 
-## Tech Stack
+Tech Stack
 
-- **Frontend**: Next.js (React), TailwindCSS, Axios  
-- **Backend**: Node.js, Express.js, Multer, Mongoose  
-- **Database**: MongoDB (local or Atlas)  
-- **Deployment**: (Optional) Vercel (frontend) + Render/Railway (backend)
+- Frontend: Next.js (React), TailwindCSS, Axios
+- Backend: Node.js, Express.js, Multer, Mongoose
+- Database: MongoDB (local or Atlas)
+- Deployment: Vercel (frontend) + Render (backend)
 
 ---
 
-## Installation & Setup
+Installation & Setup
 
-### Prerequisites
+Prerequisites
 - Node.js (v16 or later)
 - npm (comes with Node.js)
 - MongoDB (local instance or Atlas cluster)
@@ -55,39 +55,33 @@ Built as part of the Urvann Software Development Intern Assignment.
 
 ---
 
-### Backend Setup
+Backend Setup
 
-```bash
 cd backend
 npm install
-```
 
-Create a `.env` file inside `backend/`:
+Create a .env file inside backend/:
 
-```
 MONGO_URI=your_mongodb_connection_string
 PORT=5000
-```
 
 Start the server:
 
-```bash
 node index.js
-```
 
 ---
 
-### Frontend Setup
+Frontend Setup
 
-```bash
 cd frontend
 npm install
 npm run dev
-```
 
 ---
 
-## Submission
+Submission
 
-- **GitHub Repo**: [Insert Link]  
-- **Deployed Link**: [Insert Link After Deployment]
+- GitHub Repo: https://github.com/prasannaedu/urvann-assignment
+- Deployed Link:
+  - Frontend (Live): https://urvann-assignment-brcv1gvth-prasannaedus-projects.vercel.app/
+  - Backend API (Live): https://urvann-assignment-ui8k.onrender.com/plants
