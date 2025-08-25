@@ -12,10 +12,22 @@ dotenv.config();
 const app = express();
 
 // ---------- CORS ----------
+// Update this array with your actual Vercel frontend URL
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://urvann-assignment.vercel.app" // <-- replace with your deployed frontend URL
+];
+
 app.use(
   cors({
-    origin: ["http://localhost:3000"], // add frontend URL when deployed
-    credentials: false,
+    origin: (origin, callback) => {
+      // allow requests with no origin (e.g., Postman, server-to-server)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
   })
 );
 
@@ -25,7 +37,7 @@ app.use(express.json());
 // ---------- Ensure /uploads exists & serve it ----------
 const UPLOAD_DIR = path.join(__dirname, "uploads");
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-app.use("/uploads", express.static(UPLOAD_DIR)); // e.g. http://localhost:5000/uploads/<file>
+app.use("/uploads", express.static(UPLOAD_DIR));
 
 // ---------- Mongo Connection ----------
 mongoose
@@ -53,7 +65,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const safe = file.originalname.replace(/\s+/g, "_");
     cb(null, `${Date.now()}_${safe}`);
-  },
+  }
 });
 const upload = multer({
   storage,
@@ -81,7 +93,6 @@ app.get("/plants", async (req, res) => {
 
     const plants = await Plant.find(query).sort({ createdAt: -1 });
 
-    // 🔥 Fix for OLD records (without `/`)
     const fixedPlants = plants.map((p) => {
       if (p.imageUrl && !p.imageUrl.startsWith("/")) {
         p.imageUrl = `/${p.imageUrl}`;
@@ -115,7 +126,7 @@ app.post("/plants", upload.single("image"), async (req, res) => {
       price: Number(price),
       categories: catArray,
       availability: availability === "true" || availability === true,
-      imageUrl: req.file ? `/uploads/${req.file.filename}` : undefined, // ✅ fixed
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : undefined,
     });
 
     await doc.save();
@@ -187,4 +198,4 @@ app.delete("/plants/:id", async (req, res) => {
 
 // ---------- Start server ----------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
