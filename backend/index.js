@@ -12,14 +12,12 @@ dotenv.config();
 const app = express();
 
 // ---------- CORS ----------
-// Replace this with your deployed frontend URL from Vercel
-const FRONTEND_URL = "https://urvann-assignment-ui8k.vercel.app";
+const FRONTEND_URL = "https://urvann-assignment-ui8k.vercel.app"; // Deployed frontend URL
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., Postman, server-to-server)
-      if (!origin) return callback(null, true);
+      if (!origin) return callback(null, true); // allow Postman or server-to-server requests
       if (origin === "http://localhost:3000" || origin === FRONTEND_URL) {
         return callback(null, true);
       }
@@ -36,7 +34,7 @@ app.use(express.json());
 // ---------- Ensure /uploads exists & serve it ----------
 const UPLOAD_DIR = path.join(__dirname, "uploads");
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-app.use("/uploads", express.static(UPLOAD_DIR));
+app.use("/uploads", express.static(UPLOAD_DIR)); // serve images
 
 // ---------- Mongo Connection ----------
 mongoose
@@ -92,6 +90,7 @@ app.get("/plants", async (req, res) => {
 
     const plants = await Plant.find(query).sort({ createdAt: -1 });
 
+    // Fix old image paths
     const fixedPlants = plants.map((p) => {
       if (p.imageUrl && !p.imageUrl.startsWith("/")) {
         p.imageUrl = `/${p.imageUrl}`;
@@ -153,10 +152,9 @@ app.put("/plants/:id", upload.single("image"), async (req, res) => {
     if (availability !== undefined) {
       update.availability = availability === "true" || availability === true;
     }
-    if (req.file) {
-      update.imageUrl = `/uploads/${req.file.filename}`;
-    }
+    if (req.file) update.imageUrl = `/uploads/${req.file.filename}`;
 
+    // Remove old image if replaced
     if (req.file) {
       const prev = await Plant.findById(req.params.id);
       if (prev?.imageUrl) {
@@ -165,10 +163,7 @@ app.put("/plants/:id", upload.single("image"), async (req, res) => {
       }
     }
 
-    const updated = await Plant.findByIdAndUpdate(req.params.id, update, {
-      new: true,
-    });
-
+    const updated = await Plant.findByIdAndUpdate(req.params.id, update, { new: true });
     if (!updated) return res.status(404).json({ error: "Plant not found" });
     res.json(updated);
   } catch (err) {
